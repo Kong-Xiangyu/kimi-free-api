@@ -21,10 +21,9 @@ export default {
             const token = _.sample(tokens);
             // 使用 temperature 控制模型不输出检索过程
             const temperature = request.body.temperature;
-            if (temperature !== undefined && temperature === 0 && request.body.model.indexOf('silent_search') === -1) {
-                const model = 'silent_search_' + request.body.model;
-            } else {
-                const model = request.body.model;
+            let model = request.body.model;
+            if (temperature !== undefined && temperature === 0 && model.indexOf('silent_search') === -1) {
+                model += '_silent_search';
             }
             const messages =  request.body.messages;
             if (request.body.stream) {
