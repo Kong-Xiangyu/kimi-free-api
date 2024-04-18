@@ -19,7 +19,13 @@ export default {
             const tokens = chat.tokenSplit(request.headers.authorization);
             // 随机挑选一个refresh_token
             const token = _.sample(tokens);
-            const model = request.body.model;
+            // 使用 temperature 控制模型不输出检索过程
+            const temperature = request.body.temperature;
+            if (temperature !== undefined && temperature === 0 && request.body.model.indexOf('silent_search') === -1) {
+                const model = 'silent_search_' + request.body.model;
+            } else {
+                const model = request.body.model;
+            }
             const messages =  request.body.messages;
             if (request.body.stream) {
                 const stream = await chat.createCompletionStream(model, messages, token, request.body.use_search);
